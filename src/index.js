@@ -1,5 +1,7 @@
 const state = {
   currentTemperature: 50,
+  currentLandscape: '🌲🌲⛄️🌲⛄️🍂🌲🍁🌲🌲⛄️🍂🌲',
+  currentWeatherState: 4,
   temperatureDisplay: null,
   decreaseTempButton: null,
   increaseTempButton: null,
@@ -20,7 +22,6 @@ const updateDisplayTemp = () => {
 };
 
 const changeColorBasedOnTemp = () => {
-  let temperatureColor = '';
   // get current temperature and set color based on temp
   // | Temperature (F) | Color  |
   // | --------------- | ------ |
@@ -29,41 +30,73 @@ const changeColorBasedOnTemp = () => {
   // | 60-69           | Yellow |
   // | 50-59           | Green  |
   // | 49 or below     | Teal   |
+  const COLOR_STATES = {
+    1: 'red',
+    2: 'orange',
+    3: 'yellow',
+    4: 'green',
+    5: 'teal'
+  };
   if (state.temperatureColor) {
     state.temperatureDisplay.classList.remove(state.temperatureColor);
   }
-
-  if (state.currentTemperature >= 80) {
-    state.temperatureColor = 'red';
-  } else if (state.currentTemperature >= 70 && state.currentTemperature <= 79) {
-    state.temperatureColor = 'orange';
-  } else if (state.currentTemperature >= 60 && state.currentTemperature <= 69) {
-    state.temperatureColor = 'yellow';
-  } else if (state.currentTemperature >= 50 && state.currentTemperature <= 59) {
-    state.temperatureColor = 'green';
-  } else if (state.currentTemperature <= 49) {
-    state.temperatureColor = 'teal';
-  }
-
+  state.temperatureColor = COLOR_STATES[state.currentWeatherState];
   state.temperatureDisplay.classList.add(state.temperatureColor);
+};
+
+const changeLandscapeBasedOnTemp = () => {
+  // | Temperature (F) | Landscape                         |
+  // | --------------- | --------------------------------- |
+  // | 80+             | `"🌵__🐍_🦂_🌵🌵__🐍_🏜_🦂"`       |
+  // | 70-79           | `"🌸🌿🌼__🌷🌻🌿_☘️🌱_🌻🌷"`      |
+  // | 60-69           | `"🌾🌾_🍃_🪨__🛤_🌾🌾🌾_🍃"`        |
+  // | 59 or below     | `"🌲🌲⛄️🌲⛄️🍂🌲🍁🌲🌲⛄️🍂🌲"` |
+  const LANDSCAPE_STATES = {
+    1: '🌵__🐍_🦂_🌵🌵__🐍_🏜_🦂',
+    2: '🌸🌿🌼__🌷🌻🌿_☘️🌱_🌻🌷',
+    3: '🌾🌾_🍃_🪨__🛤_🌾🌾🌾_🍃',
+    4: '🌲🌲⛄️🌲⛄️🍂🌲🍁🌲🌲⛄️🍂🌲',
+    5: '🌲🌲⛄️🌲⛄️🍂🌲🍁🌲🌲⛄️🍂🌲'
+  };
+  state.landscapeDisplay.textContent = LANDSCAPE_STATES[state.currentWeatherState];
+
+};
+
+const setState = () => {
+  if (state.currentTemperature >= 80) {
+    state.currentWeatherState = 1;
+  } else if (state.currentTemperature >= 70 && state.currentTemperature <= 79) {
+    state.currentWeatherState = 2;
+  } else if (state.currentTemperature >= 60 && state.currentTemperature <= 69) {
+    state.currentWeatherState = 3;
+  } else if (state.currentTemperature >= 50 && state.currentTemperature <= 59) {
+    state.currentWeatherState = 4;
+  } else if (state.currentTemperature <= 49) {
+    state.currentWeatherState = 5;
+  }
 };
 
 const handleDecreaseTempButtonClick = () => {
   // change currentTemperature using decreaseTemp
   decreaseTemp();
-  // change the class of the text
-  changeColorBasedOnTemp();
-  // update the text that's in the HTML
-  updateDisplayTemp();
+  updateDisplay();
 };
 
 const handleIncreaseTempButtonClick = () => {
   // change currentTemperature using decreaseTemp
   increaseTemp();
+  updateDisplay();
+};
+
+const updateDisplay = () => {
   // update the text that's in the HTML
   updateDisplayTemp();
+  // update the state
+  setState();
   // change the class of the text
   changeColorBasedOnTemp();
+  // change landscape
+  changeLandscapeBasedOnTemp();
 };
 
 const registerEvents = () => {
@@ -75,6 +108,7 @@ const registerEvents = () => {
 
 const loadControls = () => {
   state.temperatureDisplay = document.getElementById('tempValue');
+  state.landscapeDisplay = document.getElementById('landscape');
   state.decreaseTempButton = document.getElementById('decreaseTempControl');
   state.increaseTempButton = document.getElementById('increaseTempControl');
 };
@@ -83,6 +117,7 @@ const onLoaded = () => {
   // steps to carry out when the page has loaded
   loadControls();
   registerEvents();
+  updateDisplay();
 };
 
 onLoaded();
