@@ -3,7 +3,7 @@
 h2 {
     margin: 0 auto 2rem auto;
 }
-  
+
 body {
 display: grid;
 grid-template-columns: 1fr 2fr;
