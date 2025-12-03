@@ -1,9 +1,12 @@
 const state = {
   currentTemperature: 50,
+  resetCityButton: null,
   temperatureDisplay: null,
   decreaseTempButton: null,
   increaseTempButton: null,
   temperatureColor: null,
+  updatedCityName: null,
+  cityNameDisplay: null,
 };
 
 const increaseTemp = () => {
@@ -66,23 +69,44 @@ const handleIncreaseTempButtonClick = () => {
   changeColorBasedOnTemp();
 };
 
+const updateCityNameField = () => {
+  state.cityNameDisplay.textContent = state.updatedCityName.value;
+}
+
+const handleResetCityName = () => {
+  state.updatedCityName.value = 'Seattle';
+  updateCityNameField(); 
+};
+
+
 const registerEvents = () => {
   state.decreaseTempButton.addEventListener('click', handleDecreaseTempButtonClick);
   state.increaseTempButton.addEventListener('click', handleIncreaseTempButtonClick);
+  state.updatedCityName.addEventListener('input', updateCityNameField);
+  state.resetCityButton.addEventListener('click', handleResetCityName);
+
   // add event listener for the scroll event for infinite scroll feature
   // window.addEventListener('scroll', handlePageScrolled);
 };
+
+
 
 const loadControls = () => {
   state.temperatureDisplay = document.getElementById('tempValue');
   state.decreaseTempButton = document.getElementById('decreaseTempControl');
   state.increaseTempButton = document.getElementById('increaseTempControl');
+  state.updatedCityName = document.getElementById('cityNameInput');
+  state.cityNameDisplay = document.querySelector('h2');
+  state.resetCityButton = document.getElementById('cityNameReset');
+
 };
 
 const onLoaded = () => {
   // steps to carry out when the page has loaded
   loadControls();
   registerEvents();
+  updateCityNameField();
 };
 
 onLoaded();
+
