@@ -8,7 +8,68 @@ const state = {
   temperatureColor: null,
   updatedCityName: null,
   cityNameDisplay: null,
+  getCurrentTempButton: null,
+  skySection: null,
+  skySelector: null
 };
+
+
+
+
+async function findLatitudeAndLongitude(query) {
+  try {
+
+    const res = await axios.get('http://127.0.0.1:5000/location', {
+      params: {
+        q: query
+      }
+    });
+
+    const { lat, lon } = res.data[0];
+    return { lat, lon };
+
+
+  } catch (error) {
+    console.log('error in findLatitudeAndLongitude!', error);
+  }
+}
+
+async function callLatLon(query) {
+  const result = await findLatitudeAndLongitude(query);
+  const temperatureK = await findTemp(result.lat, result.lon);
+  const convertedTemperature = Math.round((temperatureK.temperature - 273.15) * (9 / 5) + 32);
+  console.log(`The LatLon is ${result.lat} ${result.lon} and temperature is ${convertedTemperature}`);
+  console.log(convertedTemperature, typeof convertedTemperature);
+  state.currentTemperature = convertedTemperature;
+  updateDisplay();
+};
+
+// async function callFindTemp(query) {
+//   const temperature = await findTemp(47.6061, -122.3328);
+//   console.log(`The LatLon is ${result.lat} ${result.lon} and temperature is ${temperature}`);
+//   console.log(temperature);
+// }
+
+async function findTemp(lat, lon) {
+  try {
+
+    const response = await axios.get(
+      'http://127.0.0.1:5000/weather',
+      {
+        params: {
+          lat,
+          lon
+        }
+      }
+    );
+
+    const temperature = response.data.main.temp;
+    return { temperature };
+
+  } catch (error) {
+    console.log('error in weather', error);
+  }
+}
 
 const increaseTemp = () => {
   ++state.currentTemperature;
@@ -64,6 +125,16 @@ const changeLandscapeBasedOnTemp = () => {
 
 };
 
+const changeSky = () => {
+  // | Option | Sky                           |
+  // | ------ | ----------------------------- |
+  // | Sunny  | `"☁️ ☁️ ☁️ ☀️ ☁️ ☁️"`         |
+  // | Cloudy | `"☁️☁️ ☁️ ☁️☁️ ☁️ 🌤 ☁️ ☁️☁️"` |
+  // | Rainy  | `"🌧🌈⛈🌧🌧💧⛈🌧🌦🌧💧🌧🌧"`          |
+  // | Snowy  | `"🌨❄️🌨🌨❄️❄️🌨❄️🌨❄️❄️🌨🌨"`       |
+
+};
+
 const setState = () => {
   if (state.currentTemperature >= 80) {
     state.currentWeatherState = 1;
@@ -103,11 +174,16 @@ const updateDisplay = () => {
 
 const updateCityNameField = () => {
   state.cityNameDisplay.textContent = state.updatedCityName.value;
-}
+};
 
 const handleResetCityName = () => {
   state.updatedCityName.value = 'Seattle';
-  updateCityNameField(); 
+  updateCityNameField();
+};
+
+const handleCurrentTemp = () => {
+  console.log('this temp button works');
+  callLatLon(state.updatedCityName.value);
 };
 
 
@@ -116,6 +192,7 @@ const registerEvents = () => {
   state.increaseTempButton.addEventListener('click', handleIncreaseTempButtonClick);
   state.updatedCityName.addEventListener('input', updateCityNameField);
   state.resetCityButton.addEventListener('click', handleResetCityName);
+  state.getCurrentTempButton.addEventListener('click', handleCurrentTemp);
 
   // add event listener for the scroll event for infinite scroll feature
   // window.addEventListener('scroll', handlePageScrolled);
@@ -131,6 +208,9 @@ const loadControls = () => {
   state.updatedCityName = document.getElementById('cityNameInput');
   state.cityNameDisplay = document.querySelector('h2');
   state.resetCityButton = document.getElementById('cityNameReset');
+  state.getCurrentTempButton = document.getElementById('currentTempButton');
+  state.skySection = document.getElementById('sky__section');
+  state.skySelector = document.getElementById('skySelect');
 
 };
 
@@ -142,4 +222,7 @@ const onLoaded = () => {
 };
 
 onLoaded();
+
+
+
 
