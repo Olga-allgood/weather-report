@@ -10,7 +10,8 @@ const state = {
   cityNameDisplay: null,
   getCurrentTempButton: null,
   skySection: null,
-  skySelector: null
+  skySelector: null,
+  skyDisplay: null
 };
 
 
@@ -126,14 +127,18 @@ const changeLandscapeBasedOnTemp = () => {
 };
 
 const changeSky = () => {
-  // | Option | Sky                           |
-  // | ------ | ----------------------------- |
-  // | Sunny  | `"☁️ ☁️ ☁️ ☀️ ☁️ ☁️"`         |
-  // | Cloudy | `"☁️☁️ ☁️ ☁️☁️ ☁️ 🌤 ☁️ ☁️☁️"` |
-  // | Rainy  | `"🌧🌈⛈🌧🌧💧⛈🌧🌦🌧💧🌧🌧"`          |
-  // | Snowy  | `"🌨❄️🌨🌨❄️❄️🌨❄️🌨❄️❄️🌨🌨"`       |
+  const SKY_STATES = {
+    Sunny: `"☁️ ☁️ ☁️ ☀️ ☁️ ☁️"`,
+    Cloudy: `"☁️☁️ ☁️ ☁️☁️ ☁️ 🌤 ☁️ ☁️☁️"`,
+    Rainy: `"🌧🌈⛈🌧🌧💧⛈🌧🌦🌧💧🌧🌧"` ,
+    Snowy: `"🌨❄️🌨🌨❄️❄️🌨❄️🌨❄️❄️🌨🌨"`,  
+  };
 
+  const selected = state.skySelector.value;
+  state.skyDisplay.textContent = SKY_STATES[selected];
 };
+  
+
 
 const setState = () => {
   if (state.currentTemperature >= 80) {
@@ -193,6 +198,7 @@ const registerEvents = () => {
   state.updatedCityName.addEventListener('input', updateCityNameField);
   state.resetCityButton.addEventListener('click', handleResetCityName);
   state.getCurrentTempButton.addEventListener('click', handleCurrentTemp);
+  state.skySelector.addEventListener('change', changeSky); 
 
   // add event listener for the scroll event for infinite scroll feature
   // window.addEventListener('scroll', handlePageScrolled);
@@ -209,8 +215,9 @@ const loadControls = () => {
   state.cityNameDisplay = document.querySelector('h2');
   state.resetCityButton = document.getElementById('cityNameReset');
   state.getCurrentTempButton = document.getElementById('currentTempButton');
-  state.skySection = document.getElementById('sky__section');
+  state.skySection = document.querySelector('.sky__section');
   state.skySelector = document.getElementById('skySelect');
+  state.skyDisplay = document.getElementById('sky');
 
 };
 
