@@ -22,7 +22,7 @@ const state = {
 async function findLatitudeAndLongitude(query) {
   try {
 
-    const res = await axios.get('http://127.0.0.1:5000/location', {
+    const res = await axios.get('https://ada-weather-report-proxy-server.onrender.com/location', {
       params: {
         q: query
       }
@@ -57,7 +57,7 @@ async function findTemp(lat, lon) {
   try {
 
     const response = await axios.get(
-      'http://127.0.0.1:5000/weather',
+      'https://ada-weather-report-proxy-server.onrender.com/weather',
       {
         params: {
           lat,
