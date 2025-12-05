@@ -8,6 +8,8 @@ const state = {
   temperatureColor: null,
   updatedCityName: null,
   cityNameDisplay: null,
+  cityName: 'Seattle',
+  headerCityName: null,
   getCurrentTempButton: null,
   skySection: null,
   skySelector: null,
@@ -128,10 +130,10 @@ const changeLandscapeBasedOnTemp = () => {
 
 const changeSky = () => {
   const SKY_STATES = {
-    Sunny: `"☁️ ☁️ ☁️ ☀️ ☁️ ☁️"`,
-    Cloudy: `"☁️☁️ ☁️ ☁️☁️ ☁️ 🌤 ☁️ ☁️☁️"`,
-    Rainy: `"🌧🌈⛈🌧🌧💧⛈🌧🌦🌧💧🌧🌧"` ,
-    Snowy: `"🌨❄️🌨🌨❄️❄️🌨❄️🌨❄️❄️🌨🌨"`,  
+    Sunny: '☁️ ☁️ ☁️ ☀️ ☁️ ☁️',
+    Cloudy: '☁️☁️ ☁️ ☁️☁️ ☁️ 🌤 ☁️ ☁️☁️',
+    Rainy: '🌧🌈⛈🌧🌧💧⛈🌧🌦🌧💧🌧🌧' ,
+    Snowy: '🌨❄️🌨🌨❄️❄️🌨❄️🌨❄️❄️🌨🌨',  
   };
 
   const selected = state.skySelector.value;
@@ -175,15 +177,20 @@ const updateDisplay = () => {
   changeColorBasedOnTemp();
   // change landscape
   changeLandscapeBasedOnTemp();
+  
+  updateCityNameField();
+
 };
 
 const updateCityNameField = () => {
   state.cityNameDisplay.textContent = state.updatedCityName.value;
+  state.headerCityName.textContent = state.updatedCityName.value;
 };
 
 const handleResetCityName = () => {
   state.updatedCityName.value = 'Seattle';
   updateCityNameField();
+ 
 };
 
 const handleCurrentTemp = () => {
@@ -218,6 +225,7 @@ const loadControls = () => {
   state.skySection = document.querySelector('.sky__section');
   state.skySelector = document.getElementById('skySelect');
   state.skyDisplay = document.getElementById('sky');
+  state.headerCityName = document.querySelector('.header__city-name');
 
 };
 
